@@ -6,6 +6,7 @@ use App\Http\Resources\DocumentCollection;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DocumentController extends Controller
 {
@@ -38,6 +39,20 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'naziv'=>'required|string|max:255',
+            'sadrzaj'=>'required|string|max:100',
+            'brojStrana'=>'required|integer|min:0',
+            'autor_id'=>'required',
+            'sistemupravljanja_id'=>'required',
+            'typedocument_id'=>'required'
+
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        
         $dokument = Document::create([
             'naziv'=>$request->naziv,
             'sadrzaj'=>$request->sadrzaj,
@@ -87,6 +102,20 @@ class DocumentController extends Controller
      */
     public function update(Request $request, $document_id)
     {
+        $validator = Validator::make($request->all(),[
+            'naziv'=>'required|string|max:255',
+            'sadrzaj'=>'required|string|max:100',
+            'brojStrana'=>'required|integer|min:0',
+            'autor_id'=>'required',
+            'sistemupravljanja_id'=>'required',
+            'typedocument_id'=>'required'
+
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        
         $dokument = Document::find($document_id);
         if(is_null($dokument)){
             return response()->json('Not found',404);

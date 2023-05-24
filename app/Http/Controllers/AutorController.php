@@ -6,6 +6,7 @@ use App\Http\Resources\AutorCollection;
 use App\Http\Resources\AutorResource;
 use App\Models\Autor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AutorController extends Controller
 {
@@ -38,6 +39,16 @@ class AutorController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'ime'=>'required|string|max:255',
+            'struka'=>'required|string|max:100',
+            'brojDokumenata'=>'required|integer|min:0'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
         $autor = Autor::create([
             'ime'=>$request->ime,
             'struka'=>$request->struka,
@@ -84,6 +95,16 @@ class AutorController extends Controller
      */
     public function update(Request $request, $autor_id)
     {
+        $validator = Validator::make($request->all(),[
+            'ime'=>'required|string|max:255',
+            'struka'=>'required|string|max:100',
+            'brojDokumenata'=>'required|integer|min:0'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        
         $autor = Autor::find($autor_id);
         if(is_null($autor)){
             return response()->json('Not found',404);

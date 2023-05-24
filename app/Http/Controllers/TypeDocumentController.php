@@ -6,6 +6,7 @@ use App\Http\Resources\TypeDocumentCollection;
 use App\Http\Resources\TypeDocumentResource;
 use App\Models\TypeDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TypeDocumentController extends Controller
 {
@@ -38,6 +39,15 @@ class TypeDocumentController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'naziv'=>'required|string|max:255',
+            'nivoTerminologije'=>'required|integer|min:0',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        
         $tip = TypeDocument::create([
             'naziv'=>$request->naziv,
             'nivoTerminologije'=>$request->nivoTerminologije
@@ -83,6 +93,15 @@ class TypeDocumentController extends Controller
      */
     public function update(Request $request, $typeDocument_id)
     {
+        $validator = Validator::make($request->all(),[
+            'naziv'=>'required|string|max:255',
+            'nivoTerminologije'=>'required|integer|min:0',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        
         $tip = TypeDocument::find($typeDocument_id);
         if(is_null($tip)){
             return response()->json('Not found',404);
